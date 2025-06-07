@@ -21,26 +21,16 @@ VALID_7Z_EXTENSIONS = frozenset(('.mcworld','.7z', '.xz', '.bzip2', '.gzip', '.t
 
 
 def test_7z():
-    global SEVEN_ZIP_ARGS
-    import subprocess
     try:
-        res = subprocess.run(SEVEN_ZIP_ARGS,capture_output=True)
-    except FileNotFoundError:
-        SEVEN_ZIP_ARGS = ('C:/Program Files/7-Zip/7z.exe',)
-        try:
-            res = subprocess.run(SEVEN_ZIP_ARGS,capture_output=True)
-        except FileNotFoundError:
-            raise FileNotFoundError('7z is not on the PATH, ethier edit the SEVEN_ZIP_ARGS constant to the path to 7z.exe or install 7zip propley') from None
+        res = subprocess.run(["7z"], capture_output=True, text=True)
+        res_stdout = res.stdout.strip()
+        first_line = res_stdout.split('\n')[0]
+        version = first_line.split(' ')[2]  # "23.01"
+        if version != '23.01':
+            raise Exception(f'Too new or old of a 7zip version {version} should be 23.01')
+    except Exception as e:
+        raise Exception(f'Could not parse output from 7z (7zip) {res_stdout}') from e
 
-    if res.returncode:
-        raise Exception(f'something went wrong with 7zip... {res.stderr}')
-    res_stdout = res.stdout.decode("utf-8").replace("\r\n","\n")
-    try:
-        version = res_stdout.split('\n')[1].split(' ')[1]
-    except IndexError:
-        raise Exception(f'Could not parse output from 7z (7zip) {res_stdout}')
-    if version != '23.01':
-        raise Exception(f'Too new or old of a 7zip version {version} should be 23.01')
 test_7z()
 
 
