@@ -3,7 +3,7 @@ from pathlib import Path
 from io import StringIO
 from typing import NamedTuple, Literal
 from os import getcwd
-
+import subprocess
 
 class SevenZipFile(NamedTuple):
     path: Path
@@ -29,7 +29,7 @@ def test_7z():
         if version != '23.01':
             raise Exception(f'Too new or old of a 7zip version {version} should be 23.01')
     except Exception as e:
-        raise Exception(f'Could not parse output from 7z (7zip) {res_stdout}') from e
+        raise Exception(f'Could not parse output from 7z (7zip). Make sure 7z 23.01 is installed.') from e
 
 test_7z()
 
