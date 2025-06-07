@@ -52,7 +52,7 @@ def load_creds(cred_json_name: str = "credentials.json"):
             flow = InstalledAppFlow.from_client_secrets_file(
                 cred_json_name, ["https://www.googleapis.com/auth/drive"]
             )
-            creds = flow.run_local_server(port=0)
+            creds = flow.run_console()
         with creds_file.open("w") as f:
             f.write(creds.to_json())
     build("drive", "v3", credentials=creds)
